@@ -1,4 +1,6 @@
 # 
+QT大作业更新日志：  
+
 5.30修改内容：
 1.新增player角色类，删除原有protagonist、2个timer，将jump，move等函数移动到类中  
 2.新增地图文件，程序启动时从map1.dat文件中加载（请关闭shadow build否则会加载失败！！）  
