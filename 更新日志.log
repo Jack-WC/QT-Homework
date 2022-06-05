@@ -1,4 +1,4 @@
-QT大作业更新日志：
+从零开始的QT大作业更新日志：
 
 5.30修改内容（By Jack_WC）： 
 1.新增player角色类，删除原有protagonist、2个timer，将jump，move等函数移动到类中
