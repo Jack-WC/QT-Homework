@@ -1,0 +1,14 @@
+INPUT(
+./release\main.o
+./release\mainwindow.o
+./release\pick.o
+./release\fail.o
+./release\startscreen.o
+./release\player.o
+./release\qrc_image.o
+./release\qrc_data.o
+./release\moc_mainwindow.o
+./release\moc_pick.o
+./release\moc_fail.o
+./release\moc_startscreen.o
+);

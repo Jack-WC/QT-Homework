@@ -1,0 +1,14 @@
+INPUT(
+./debug\main.o
+./debug\mainwindow.o
+./debug\pick.o
+./debug\fail.o
+./debug\startscreen.o
+./debug\player.o
+./debug\qrc_image.o
+./debug\qrc_data.o
+./debug\moc_mainwindow.o
+./debug\moc_pick.o
+./debug\moc_fail.o
+./debug\moc_startscreen.o
+);
