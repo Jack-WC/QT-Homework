@@ -34,6 +34,7 @@ bool Player::isOutOfBorder(int dir, int step)
 
 void Player::vertical_move() //上下移动
 { 
+    //qDebug() << "vmove" << endl;
     int step = vertical_speed * ((double)INTERVAL / 1000);
     int dir = step > 0 ? 1 : 0; //移动方向
     vertical_speed += GRAVITY * ((double)INTERVAL / 1000); //加速
@@ -46,7 +47,10 @@ void Player::vertical_move() //上下移动
 void Player::jump(int init_speed) //人物跳跃
 {
     if(timer->isActive())
+    {
+        //qDebug() << "return" << endl;
         return;
+    }
     vertical_speed = -init_speed; //设置初速度
     timer->start(INTERVAL);
 }

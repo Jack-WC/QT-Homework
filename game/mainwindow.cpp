@@ -231,7 +231,10 @@ void MainWindow::onTimer_player()
 void MainWindow::playerMove()
 {
     if(up_pressed)
+    {
         player->jump(800);
+        //qDebug() << "jump" << endl;
+    }
     if(left_pressed)
     {
         if(player->getTowards() != Player::towardLeft)
@@ -253,7 +256,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_W:
         if(!event->isAutoRepeat() && !up_pressed) //解决qt长按重复调用press和release的问题
+        {
             up_pressed = true;
+            //qDebug() << "up_pressed" << endl;
+        }
         break;
     case Qt::Key_A:
         if(!event->isAutoRepeat() && !left_pressed)
@@ -275,7 +281,10 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
     {
     case Qt::Key_W:
         if(!event->isAutoRepeat() && up_pressed)
+        {
             up_pressed = false;
+            //qDebug() << "up_released" << endl;
+        }
         break;
     case Qt::Key_A:
         if(!event->isAutoRepeat() && left_pressed)
