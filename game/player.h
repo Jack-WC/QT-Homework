@@ -14,10 +14,14 @@ public:
     Player(int type_, int init_towards, MainWindow *parent_);
     bool isInSpace();
     void jump(int init_speed);
-    bool move(int dir, int step); //dir:0123分别为上下左右，step为步长
+    bool move(int dir, int step); //dir:0123分别为上下左右,step为步长
     void setTowards(int towards);
     int getTowards();
     int getVerticalSpeed() const;
+    int getType();
+    int walk_step=0;
+    int getHp();
+    bool changeHp(int delta);
     enum //方向与朝向的枚举类型
     {
         moveUp = 0,
@@ -37,6 +41,7 @@ private:
     int type; //角色类型
     int towards = 1; //朝向:0为左，1为右
     int vertical_speed = 0; //垂直速度，以向下为正方向
+    int hp=12;//血量，不超过12
 
     QPixmap getPixmap(int type, int towards); //获取图片
     bool isOutOfBorder(int dir, int step); //判断是否出界

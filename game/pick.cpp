@@ -8,7 +8,7 @@ const int Y=900;//界面高度
 const int C_W=30*5;//角色宽度
 const int C_H=50*5;//角色高度
 
-pick::pick(QWidget *parent) :
+pick::pick(QWidget *parent) : //pick继承自QMainWindow类
     QMainWindow(parent),
     ui(new Ui::pick)
 {

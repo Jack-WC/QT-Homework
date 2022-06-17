@@ -33,6 +33,8 @@ public:
     ~MainWindow();
     void keyPressEvent(QKeyEvent *event); //键盘按下
     void keyReleaseEvent(QKeyEvent *event); //键盘释放
+    void endMove();
+    void showHp();
     std::vector<QLabel*> &getBlocks();
 
 public slots:
@@ -42,21 +44,24 @@ public slots:
     void onTimer_monster4();
     void onTimer_attack();
     void onTimer_player();
+    void onTimer_walk();
 
 private:
     Ui::MainWindow *ui;
     Player *player;
-    QPoint monster_pos[4] = {{400, 650}, {1200, 250}, {500, 150}, {100, 300}};
+    QPoint monster_pos[4] = {{400, 650}, {1200, 250}, {500, 150}, {100, 300}};//怪物位置
     QLabel *background;//背景
     QLabel *monster[4];//怪物
     QLabel *door;//传送门
+    QLabel* hp_label;
     QTimer *player_timer; //人物横向移动计时器
+    QTimer *walk_timer; //人物移动动画计时器
     QTimer *timer_monster[4];//怪物移动计时器
     QTimer *timer_attack;//战斗计时器
     int turns;//记录跳跃过程
     int direction1, direction2, direction3, direction4;//记录怪物移动方向
     int record[4];//记录怪物死亡情况
-    bool left_pressed, right_pressed, up_pressed;
+    bool left_pressed = false, right_pressed = false, up_pressed = false;
 
     void playerMove(); //玩家移动函数
 };

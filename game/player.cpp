@@ -6,23 +6,15 @@ Player::Player(int type_, int init_towards, MainWindow *parent_)
 {
     setScaledContents(true);
     setPixmap(getPixmap(type, towards));
-    timer = new QTimer(parent);
+    timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Player::vertical_move);
 }
 
 QPixmap Player::getPixmap(int type, int towards)
 {
     QString prefix(":/new/prefix1/Image/");
-    switch(type)
-    {
-    case 1:
-        return towards == 0 ? QPixmap(prefix + "left1.png") : QPixmap(prefix + "right1.png");
-    case 2:
-        return towards == 0 ? QPixmap(prefix + "left2.png") : QPixmap(prefix + "right2.png");
-    default:
-        qDebug() << "Invalid character" << endl;
-        return QPixmap();
-    }
+    QString nowtowards= towards== 0 ? "left" : "right";
+    return QPixmap(prefix +QString::number(type)+ nowtowards+"2.png");
 }
 
 bool Player::isOutOfBorder(int dir, int step)
@@ -33,9 +25,9 @@ bool Player::isOutOfBorder(int dir, int step)
 }
 
 void Player::vertical_move() //上下移动
-{ 
-    //qDebug() << "vmove" << endl;
-    int step = vertical_speed * ((double)INTERVAL / 1000);
+{
+    qDebug() << "vmove" << endl;
+    int step = vertical_speed * ((double)INTERVAL / 1000);//INTERVAL为10，GRAVITY为1000
     int dir = step > 0 ? 1 : 0; //移动方向
     vertical_speed += GRAVITY * ((double)INTERVAL / 1000); //加速
     if(!move(dir, abs(step))) //碰到障碍，速度变为0
@@ -47,11 +39,8 @@ void Player::vertical_move() //上下移动
 void Player::jump(int init_speed) //人物跳跃
 {
     if(timer->isActive())
-    {
-        //qDebug() << "return" << endl;
         return;
-    }
-    vertical_speed = -init_speed; //设置初速度
+    vertical_speed = -init_speed; //设置初速度,以向下为速度正方向
     timer->start(INTERVAL);
 }
 
@@ -75,12 +64,10 @@ void Player::moveEvent(QMoveEvent *event) //人物移动事件处理
     if(pos().y() >= MainWindow::Y) //掉出画面，游戏失败
         exit(0);
     if(isInSpace()) //踩空
-    {
         jump(0);
-    }
-    else
+    else//在地面上
     {
-        if(timer->isActive())
+        if(vertical_speed > 0 && timer->isActive())
         {
             timer->stop();
             vertical_speed = 0;
@@ -129,6 +116,11 @@ int Player::getTowards()
     return towards;
 }
 
+int Player::getType()
+{
+    return type;
+}
+
 void Player::setTowards(int towards)
 {
     this->towards = towards;
@@ -138,5 +130,17 @@ void Player::setTowards(int towards)
 int Player::getVerticalSpeed() const
 {
     return vertical_speed;
+}
+
+int Player::getHp()
+{
+    return hp;
+}
+
+bool Player::changeHp(int delta)
+{
+    hp-=delta;
+    if(hp<=0) return true;
+    else return false;
 }
 

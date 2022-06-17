@@ -1,19 +1,52 @@
 <RCC>
     <qresource prefix="/new/prefix1">
         <file>Image/back.png</file>
-        <file>Image/character1.png</file>
         <file>Image/character2.png</file>
         <file>Image/ground.png</file>
-        <file>Image/left1.png</file>
-        <file>Image/left2.png</file>
-        <file>Image/right1.png</file>
-        <file>Image/right2.png</file>
         <file>Image/monster1.png</file>
         <file>Image/monster2.png</file>
         <file>Image/monster3.png</file>
         <file>Image/monster4.png</file>
         <file>Image/door.png</file>
-        <file>Image/right1_new.png</file>
-        <file>Image/left1_new.png</file>
+        <file>Image/1left0.png</file>
+        <file>Image/1left1.png</file>
+        <file>Image/1left2.png</file>
+        <file>Image/1left3.png</file>
+        <file>Image/1left4.png</file>
+        <file>Image/1left5.png</file>
+        <file>Image/1right0.png</file>
+        <file>Image/1right1.png</file>
+        <file>Image/1right2.png</file>
+        <file>Image/1right3.png</file>
+        <file>Image/1right4.png</file>
+        <file>Image/1right5.png</file>
+        <file>Image/2left0.png</file>
+        <file>Image/2left1.png</file>
+        <file>Image/2left2.png</file>
+        <file>Image/2left3.png</file>
+        <file>Image/2left4.png</file>
+        <file>Image/2left5.png</file>
+        <file>Image/2right0.png</file>
+        <file>Image/2right1.png</file>
+        <file>Image/2right2.png</file>
+        <file>Image/2right3.png</file>
+        <file>Image/2right4.png</file>
+        <file>Image/2right5.png</file>
+        <file>Image/hp1.png</file>
+        <file>Image/hp2.png</file>
+        <file>Image/hp3.png</file>
+        <file>Image/hp4.png</file>
+        <file>Image/hp5.png</file>
+        <file>Image/hp6.png</file>
+        <file>Image/hp7.png</file>
+        <file>Image/hp8.png</file>
+        <file>Image/hp9.png</file>
+        <file>Image/hp10.png</file>
+        <file>Image/hp11.png</file>
+        <file>Image/hp12.png</file>
+        <file>Image/background.png</file>
+        <file>Image/skip.png</file>
+        <file>Image/op.mp4</file>
+        <file>Image/character1.png</file>
     </qresource>
 </RCC>
