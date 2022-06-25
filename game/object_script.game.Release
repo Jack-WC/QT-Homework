@@ -6,6 +6,8 @@ INPUT(
 ./release\startscreen.o
 ./release\player.o
 ./release\op.o
+./release\game.o
+./release\mainframe.o
 ./release\qrc_image.o
 ./release\qrc_data.o
 ./release\moc_mainwindow.o
@@ -13,4 +15,6 @@ INPUT(
 ./release\moc_fail.o
 ./release\moc_startscreen.o
 ./release\moc_op.o
+./release\moc_game.o
+./release\moc_mainframe.o
 );

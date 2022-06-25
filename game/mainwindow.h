@@ -8,6 +8,12 @@
 #include <QTimer>
 
 //此处定义全局常量
+extern const int C_W;//人物宽与高
+extern const int C_H;
+extern const int M_W;//怪物宽度
+extern const int M_H;//怪物高度
+extern const int WALKINTERVAL;//走路动画差分时间间隔，调到30以上会出bug，目前不清楚原因
+extern const int M_Hurt;//怪物伤害
 extern const int GRAVITY; //重力
 extern const int INTERVAL; //跳跃动画间隔（单位ms）
 extern const QPoint movePos[4]; //移动方向数组
@@ -19,23 +25,17 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    const static int X;//界面宽度
-    const static int Y;//界面高度
-    const static int BLOCK_W;//方块宽度
-    const static int BLOCK_H;//方块高度
+    const static int WIDTH, HEIGHT, BLOCK_W, BLOCK_H;
 
     explicit MainWindow(int sign, QWidget *parent = 0);
     ~MainWindow();
-    void keyPressEvent(QKeyEvent *event); //键盘按下
-    void keyReleaseEvent(QKeyEvent *event); //键盘释放
-    void endMove();
+    Player *getPlayer();
     void showHp();
-    std::vector<QLabel*> &getBlocks();
 
 public slots:
     void onTimer_monster1();
@@ -43,8 +43,6 @@ public slots:
     void onTimer_monster3();
     void onTimer_monster4();
     void onTimer_attack();
-    void onTimer_player();
-    void onTimer_walk();
 
 private:
     Ui::MainWindow *ui;
@@ -54,16 +52,12 @@ private:
     QLabel *monster[4];//怪物
     QLabel *door;//传送门
     QLabel* hp_label;
-    QTimer *player_timer; //人物横向移动计时器
-    QTimer *walk_timer; //人物移动动画计时器
     QTimer *timer_monster[4];//怪物移动计时器
     QTimer *timer_attack;//战斗计时器
+    QList<QLabel*> blocks;
     int turns;//记录跳跃过程
     int direction1, direction2, direction3, direction4;//记录怪物移动方向
     int record[4];//记录怪物死亡情况
-    bool left_pressed = false, right_pressed = false, up_pressed = false;
-
-    void playerMove(); //玩家移动函数
 };
 
 #endif // MAINWINDOW_H

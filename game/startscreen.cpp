@@ -1,11 +1,7 @@
 #include "startscreen.h"
 #include "ui_startscreen.h"
 #include "pick.h"
-#include<QPushButton>
-const int X=1600;//界面宽度
-const int Y=900;//界面高度
-const int C_W=300;//角色宽度
-const int C_H=500;//角色高度
+#include <QPushButton>
 
 StartScreen::StartScreen(QWidget *parent) :
     QMainWindow(parent),
@@ -15,7 +11,7 @@ StartScreen::StartScreen(QWidget *parent) :
 
     //背景
     QLabel *background = new QLabel(this);
-    background->resize(X,Y);
+    background->resize(MainWindow::WIDTH,MainWindow::HEIGHT);
     background->setScaledContents(true);
     background->setAutoFillBackground(true);
     background->setPixmap(QPixmap(":/new/prefix1/Image/back.png"));

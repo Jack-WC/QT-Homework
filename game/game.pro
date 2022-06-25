@@ -19,20 +19,26 @@ SOURCES += main.cpp\
     fail.cpp \
     startscreen.cpp \
     player.cpp \
-    op.cpp
+    op.cpp \
+    game.cpp \
+    mainframe.cpp
 
 HEADERS  += mainwindow.h \
     pick.h \
     fail.h \
     startscreen.h \
     player.h \
-    op.h
+    op.h \
+    game.h \
+    mainframe.h
 
 FORMS    += mainwindow.ui \
     pick.ui \
     fail.ui \
     startscreen.ui \
-    op.ui
+    op.ui \
+    game.ui \
+    mainframe.ui
 
 RESOURCES += \
     image.qrc \

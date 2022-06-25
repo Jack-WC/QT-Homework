@@ -15,10 +15,10 @@
 #include <QtWidgets>
 #include <vector>
 #include <fstream>
-#include<synchapi.h>
+#include <synchapi.h>
 
-const int MainWindow::X = 1600;//界面宽度
-const int MainWindow::Y = 900;//界面高度
+const int MainWindow::WIDTH = 1600;//界面宽度
+const int MainWindow::HEIGHT = 900;//界面高度
 const int MainWindow::BLOCK_W = 100;//区块宽与高
 const int MainWindow::BLOCK_H = 100;
 const int C_W = 60;//人物宽与高
@@ -31,28 +31,20 @@ const int WALKINTERVAL = 50;//走路动画差分时间间隔，调到30以上会
 const int M_Hurt = 1;//怪物伤害
 const QPoint movePos[4] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
 
-std::vector<QLabel*> blocks;
-
 MainWindow::MainWindow(int sign, QWidget *parent) :
-    QMainWindow(parent),
+    QWidget(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    setFixedSize(X, Y);
+    setFixedSize(WIDTH, HEIGHT);
 
     //背景
     background = new QLabel(this);
-    background->resize(X,Y);
+    background->resize(WIDTH, HEIGHT);
     background->setScaledContents(true);
     background->setAutoFillBackground(true);
     background->setPixmap(QPixmap(":/new/prefix1/Image/back.png"));
 
-    //主角
-    player = new Player(sign, Player::towardRight, this);
-    player->setGeometry(0, 700, C_W, C_H);
-
     //加载地图文件
-    qDebug() << QDir::currentPath() << endl;
     std::ifstream mapfile("./data/map1.dat");
     if(mapfile.is_open())
     {
@@ -71,6 +63,10 @@ MainWindow::MainWindow(int sign, QWidget *parent) :
     else
         qDebug() << "Map data file cannot open" << endl;
 
+    //主角
+    player = new Player(sign, Player::towardRight, blocks, this);
+    player->setGeometry(0, 700, C_W, C_H);
+
     //怪物生成
     for(int i=0; i<4; i++){
         monster[i] = new QLabel(this);
@@ -78,19 +74,12 @@ MainWindow::MainWindow(int sign, QWidget *parent) :
         monster[i]->setGeometry(monster_pos[i].x(), monster_pos[i].y(), M_W, M_H);
         monster[i]->setPixmap(QPixmap(":/new/prefix1/Image/monster" + QString::number(i + 1) + ".png"));
     }
-    //人物移动计时器
-    player_timer = new QTimer(this);
-    connect(player_timer, SIGNAL(timeout()), this, SLOT(onTimer_player()));
 
     //血条展示
     hp_label=new QLabel(this);
     hp_label->setScaledContents(true);
     hp_label->setGeometry(10,10,50*((player->getHp()+1)/2),50);
     hp_label->setPixmap(QPixmap(":/new/prefix1/Image/hp" + QString::number(player->getHp()) + ".png"));
-
-    //人物移动动画计时器
-    walk_timer=new QTimer(this);
-    connect(walk_timer, SIGNAL(timeout()), this, SLOT(onTimer_walk()));//将移动动画计时器的timeout信号与槽函数onTimer_walk连接
 
     //怪物移动计时器初始化
     timer_monster[0] = new QTimer(this);
@@ -126,11 +115,6 @@ MainWindow::MainWindow(int sign, QWidget *parent) :
     door->setScaledContents(true);
     door->setPixmap(QPixmap(":/new/prefix1/Image/door.png"));
     door->setGeometry(0,250,100,100);
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
 }
 
 //怪物移动函数
@@ -247,83 +231,6 @@ void MainWindow::onTimer_attack()
     }
 }
 
-void MainWindow::onTimer_player()
-{
-    if(player->getTowards() == Player::towardLeft)
-        player->move(Player::moveLeft, 2);
-    else
-        player->move(Player::moveRight, 2);
-}
-
-//走路动画
-void MainWindow::onTimer_walk()
-{
-    //if(player->getVerticalSpeed()==0){//在空中左右移动是否需要走路动画？这里默认需要，如果不想要就删掉前面的注释号
-    int now_step=player->walk_step<6 ? -abs(player->walk_step-1)+5 : player->walk_step-6;
-    QString prefix(":/new/prefix1/Image/");
-    QString nowtowards = player->getTowards() == Player::towardLeft?"left":"right";
-    player->setPixmap(QPixmap(prefix +QString::number(player->getType())+ nowtowards+QString::number(now_step)+".png"));
-    player->walk_step=(player->walk_step+1)%10;
-    //}
-}
-
-void MainWindow::playerMove()
-{
-    if(up_pressed)
-        player->jump(700);
-    if(left_pressed)
-    {
-        if(player->getTowards() != Player::towardLeft)
-            player->setTowards(Player::towardLeft);
-        if(!player_timer->isActive())
-            player_timer->start(INTERVAL);
-        if(!walk_timer->isActive())
-            walk_timer->start(WALKINTERVAL);
-    }
-    if(right_pressed)
-    {
-        if(player->getTowards() != Player::towardRight)
-            player->setTowards(Player::towardRight);
-        if(!player_timer->isActive())
-            player_timer->start(INTERVAL);
-        if(!walk_timer->isActive())
-            walk_timer->start(WALKINTERVAL);
-    }
-}
-
-//键盘响应
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-    switch(event->key())
-    {
-    case Qt::Key_W:
-        if(!event->isAutoRepeat() && !up_pressed) //解决qt长按重复调用press和release的问题
-        {
-            up_pressed = true;
-            //qDebug() << "up" << endl;
-        }
-        break;
-    case Qt::Key_A:
-        if(!event->isAutoRepeat() && !left_pressed)
-            left_pressed = true;
-        break;
-    case Qt::Key_D:
-        if(!event->isAutoRepeat() && !right_pressed)
-            right_pressed = true;
-        break;
-    default:
-        break;
-    }
-    playerMove();
-}
-
-void MainWindow::endMove(){
-    player_timer->stop();
-    walk_timer->stop();
-    player->walk_step=0;
-    player->setTowards(player->getTowards());
-} 
-
 //更新血条
 void MainWindow::showHp()
 {
@@ -331,34 +238,12 @@ void MainWindow::showHp()
     hp_label->setPixmap(QPixmap(":/new/prefix1/Image/hp" + QString::number(player->getHp()) + ".png"));
 }
 
-void MainWindow::keyReleaseEvent(QKeyEvent *event)
+MainWindow::~MainWindow()
 {
-    switch(event->key())
-    {
-    case Qt::Key_W:
-        if(!event->isAutoRepeat() && up_pressed)
-            up_pressed = false;
-        break;
-    case Qt::Key_A:
-        if(!event->isAutoRepeat() && left_pressed)
-        {
-            left_pressed = false;
-            endMove();
-        }
-        break;
-    case Qt::Key_D:
-        if(!event->isAutoRepeat() && right_pressed)
-        {
-            right_pressed = false;
-            endMove();
-        }
-        break;
-    default:
-        break;
-    }
+    delete ui;
 }
 
-std::vector<QLabel*> &MainWindow::getBlocks()
+Player *MainWindow::getPlayer()
 {
-    return blocks;
+    return player;
 }
