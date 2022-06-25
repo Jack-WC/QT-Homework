@@ -3,21 +3,21 @@
 #include "mainwindow.h"
 #include <QPushButton>
 
-const int X=1600;//界面宽度
-const int Y=900;//界面高度
-const int C_W=30*5;//角色宽度
-const int C_H=50*5;//角色高度
+const int pick::WIDTH=1600;//界面宽度
+const int pick::HEIGHT=900;//界面高度
+const int pick::C_W=30*5;//角色宽度
+const int pick::C_H=50*5;//角色高度
 
-pick::pick(QWidget *parent) :
+pick::pick(QWidget *parent) : //pick继承自QMainWindow类
     QMainWindow(parent),
     ui(new Ui::pick)
 {
     ui->setupUi(this);
-    resize(X,Y);
+    resize(WIDTH, HEIGHT);
 
     //背景
     QLabel *background = new QLabel(this);
-    background->resize(X,Y);
+    background->resize(WIDTH, HEIGHT);
     background->setScaledContents(true);
     background->setAutoFillBackground(true);
     background->setPixmap(QPixmap(":/new/prefix1/Image/back.png"));
@@ -55,14 +55,15 @@ pick::~pick()
 
 void pick::onbutton1()
 {
-    QMainWindow *level = new MainWindow(1);
-    level->show();
+    Game *game = new Game(1);
+    //QMainWindow *level = new MainWindow(1);
+    game->show();
     delete this;
 }
 
 void pick::onbutton2()
 {
-    QMainWindow *level = new MainWindow(2);
-    level->show();
+    //QMainWindow *level = new MainWindow(2);
+    //level->show();
     delete this;
 }

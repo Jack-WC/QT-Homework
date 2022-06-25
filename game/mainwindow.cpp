@@ -4,47 +4,47 @@
  * 3.优化了部分代码
  * 提示：QLabel直接用QPixmap加载图片即可
 */
+/*6.17修改内容：
+ * 1.增加左右移动的动作差分，为此，改变角色图片命名方式为" type(0/1)+towards(left/right)+step(0-5).png"，同时修改原player的getPixmap()函数
+ * 2.尝试增加片头动画（可点击右下角跳过）与开始界面（仅示意，后续再讨论修改），但qt播放视频需要另外的解码器，故另附K-Lite安装包
+ * 3.尝试给人物增加血条，撞到怪物减血，血为零或者掉出界面自动退出
+*/
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "player.h"
 #include <QtWidgets>
 #include <vector>
 #include <fstream>
+#include <synchapi.h>
 
-const int MainWindow::X = 1600;//界面宽度
-const int MainWindow::Y = 900;//界面高度
-const int MainWindow::BLOCK_W = 100;
+const int MainWindow::WIDTH = 1600;//界面宽度
+const int MainWindow::HEIGHT = 900;//界面高度
+const int MainWindow::BLOCK_W = 100;//区块宽与高
 const int MainWindow::BLOCK_H = 100;
-const int C_W = 60;
+const int C_W = 60;//人物宽与高
 const int C_H = 100;
 const int M_W = 50;//怪物宽度
 const int M_H = 50;//怪物高度
 const int GRAVITY = 1000;
 const int INTERVAL = 10;
+const int WALKINTERVAL = 50;//走路动画差分时间间隔，调到30以上会出bug，目前不清楚原因
+const int M_Hurt = 1;//怪物伤害
 const QPoint movePos[4] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
 
-std::vector<QLabel*> blocks; //存储方块
-
 MainWindow::MainWindow(int sign, QWidget *parent) :
-    QMainWindow(parent),
+    QWidget(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    setFixedSize(X, Y);
+    setFixedSize(WIDTH, HEIGHT);
 
     //背景
     background = new QLabel(this);
-    background->resize(X,Y);
+    background->resize(WIDTH, HEIGHT);
     background->setScaledContents(true);
     background->setAutoFillBackground(true);
     background->setPixmap(QPixmap(":/new/prefix1/Image/back.png"));
 
-    //主角
-    player = new Player(sign, Player::towardRight, this);
-    player->setGeometry(0, 700, C_W, C_H);
-
     //加载地图文件
-    qDebug() << QDir::currentPath() << endl;
     std::ifstream mapfile("./data/map1.dat");
     if(mapfile.is_open())
     {
@@ -63,6 +63,10 @@ MainWindow::MainWindow(int sign, QWidget *parent) :
     else
         qDebug() << "Map data file cannot open" << endl;
 
+    //主角
+    player = new Player(sign, Player::towardRight, blocks, this);
+    player->setGeometry(0, 700, C_W, C_H);
+
     //怪物生成
     for(int i=0; i<4; i++){
         monster[i] = new QLabel(this);
@@ -70,14 +74,17 @@ MainWindow::MainWindow(int sign, QWidget *parent) :
         monster[i]->setGeometry(monster_pos[i].x(), monster_pos[i].y(), M_W, M_H);
         monster[i]->setPixmap(QPixmap(":/new/prefix1/Image/monster" + QString::number(i + 1) + ".png"));
     }
-    //人物移动计时器
-    player_timer = new QTimer(this);
-    connect(player_timer, SIGNAL(timeout()), this, SLOT(onTimer_player()));
+
+    //血条展示
+    hp_label=new QLabel(this);
+    hp_label->setScaledContents(true);
+    hp_label->setGeometry(10,10,50*((player->getHp()+1)/2),50);
+    hp_label->setPixmap(QPixmap(":/new/prefix1/Image/hp" + QString::number(player->getHp()) + ".png"));
 
     //怪物移动计时器初始化
     timer_monster[0] = new QTimer(this);
     connect(timer_monster[0],SIGNAL(timeout()),this,SLOT(onTimer_monster1()));
-    direction1 = 0;
+    direction1 = 0;//怪物初始移动方向
     timer_monster[0]->start(100);
 
     timer_monster[1] = new QTimer(this);
@@ -108,11 +115,6 @@ MainWindow::MainWindow(int sign, QWidget *parent) :
     door->setScaledContents(true);
     door->setPixmap(QPixmap(":/new/prefix1/Image/door.png"));
     door->setGeometry(0,250,100,100);
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
 }
 
 //怪物移动函数
@@ -188,7 +190,7 @@ void MainWindow::onTimer_monster4()
     }
 }
 
-//判断主角和怪物的位置关系,1代表怪物死亡，2代表主角死亡
+//判断主角和怪物的位置关系,1代表怪物死亡，2代表主角受伤
 int check_attack(const Player *player, const QLabel* monster)
 {
     if(player->geometry().intersects(monster->geometry()))
@@ -215,97 +217,33 @@ void MainWindow::onTimer_attack()
             timer_monster[i] = nullptr;
         }
         else if(result[i] == 2 && record[i] == 1){
-            exit(0);
+            if(player->changeHp(M_Hurt)){
+                exit(0);//血为零直接结束/弹出失败界面
+            }
+            showHp();//不然则杀死怪物
+            record[i] = 0;
+            timer_monster[i]->stop();
+            delete monster[i];
+            delete timer_monster[i];
+            monster[i] = nullptr;
+            timer_monster[i] = nullptr;
         }
     }
 }
 
-void MainWindow::onTimer_player()
+//更新血条
+void MainWindow::showHp()
 {
-    if(player->getTowards() == Player::towardLeft)
-        player->move(Player::moveLeft, 2);
-    else
-        player->move(Player::moveRight, 2);
+    hp_label->setGeometry(10,10,50*((player->getHp()+1)/2),50);
+    hp_label->setPixmap(QPixmap(":/new/prefix1/Image/hp" + QString::number(player->getHp()) + ".png"));
 }
 
-void MainWindow::playerMove()
+MainWindow::~MainWindow()
 {
-    if(up_pressed)
-    {
-        player->jump(800);
-        //qDebug() << "jump" << endl;
-    }
-    if(left_pressed)
-    {
-        if(player->getTowards() != Player::towardLeft)
-            player->setTowards(Player::towardLeft);
-        player_timer->start(INTERVAL);
-    }
-    if(right_pressed)
-    {
-        if(player->getTowards() != Player::towardRight)
-            player->setTowards(Player::towardRight);
-        player_timer->start(INTERVAL);
-    }
+    delete ui;
 }
 
-//键盘响应
-void MainWindow::keyPressEvent(QKeyEvent *event)
+Player *MainWindow::getPlayer()
 {
-    switch(event->key())
-    {
-    case Qt::Key_W:
-        if(!event->isAutoRepeat() && !up_pressed) //解决qt长按重复调用press和release的问题
-        {
-            up_pressed = true;
-            //qDebug() << "up_pressed" << endl;
-        }
-        break;
-    case Qt::Key_A:
-        if(!event->isAutoRepeat() && !left_pressed)
-            left_pressed = true;
-        break;
-    case Qt::Key_D:
-        if(!event->isAutoRepeat() && !right_pressed)
-            right_pressed = true;
-        break;
-    default:
-        break;
-    }
-    playerMove();
-}
-
-void MainWindow::keyReleaseEvent(QKeyEvent *event)
-{
-    switch(event->key())
-    {
-    case Qt::Key_W:
-        if(!event->isAutoRepeat() && up_pressed)
-        {
-            up_pressed = false;
-            //qDebug() << "up_released" << endl;
-        }
-        break;
-    case Qt::Key_A:
-        if(!event->isAutoRepeat() && left_pressed)
-        {
-            left_pressed = false;
-            player_timer->stop();
-        }
-        break;
-    case Qt::Key_D:
-        if(!event->isAutoRepeat() && right_pressed)
-        {
-            right_pressed = false;
-            player_timer->stop();
-        }
-        break;
-    default:
-        break;
-    }
-}
-
-std::vector<QLabel*> &MainWindow::getBlocks()
-{
-    return blocks;
+    return player;
 }

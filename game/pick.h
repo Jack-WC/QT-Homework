@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QPushButton>
+#include "player.h"
+#include "game.h"
 
 //人物选择界面
 
@@ -16,6 +18,8 @@ class pick : public QMainWindow
     Q_OBJECT
 
 public:
+    const static int WIDTH, HEIGHT, C_H, C_W;
+
     explicit pick(QWidget *parent = 0);
     ~pick();
 

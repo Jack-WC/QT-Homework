@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += core gui multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,22 +14,31 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     pick.cpp \
     fail.cpp \
     startscreen.cpp \
-    player.cpp
+    player.cpp \
+    op.cpp \
+    game.cpp \
+    mainframe.cpp
 
 HEADERS  += mainwindow.h \
     pick.h \
     fail.h \
     startscreen.h \
-    player.h
+    player.h \
+    op.h \
+    game.h \
+    mainframe.h
 
 FORMS    += mainwindow.ui \
     pick.ui \
     fail.ui \
-    startscreen.ui
+    startscreen.ui \
+    op.ui \
+    game.ui \
+    mainframe.ui
 
 RESOURCES += \
     image.qrc \
