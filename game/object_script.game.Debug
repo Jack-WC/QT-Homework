@@ -8,13 +8,16 @@ INPUT(
 ./debug\op.o
 ./debug\game.o
 ./debug\mainframe.o
+./debug\hpbar.o
 ./debug\qrc_image.o
 ./debug\qrc_data.o
 ./debug\moc_mainwindow.o
 ./debug\moc_pick.o
 ./debug\moc_fail.o
 ./debug\moc_startscreen.o
+./debug\moc_player.o
 ./debug\moc_op.o
 ./debug\moc_game.o
 ./debug\moc_mainframe.o
+./debug\moc_hpbar.o
 );

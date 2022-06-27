@@ -8,7 +8,7 @@ class Player;
 
 class Player : public QLabel
 {
-    //Q_OBJECT
+    Q_OBJECT
 
 public:
     Player(int type_, int init_towards, QList<QLabel*> &ground_arr_, QWidget *parent);
@@ -20,10 +20,15 @@ public:
     int getVerticalSpeed() const;
     int getType();
     int walk_step=0;
+    void setMaxHp(int max_hp);
+    int getMaxHp();
     int getHp();
     bool changeHp(int delta);
     void keyAction(bool up, bool left, bool right);
     void endMove();
+    void setSpeed(int speed);
+    void setGravity(int gravity);
+
     enum //方向与朝向的枚举类型
     {
         moveUp = 0,
@@ -33,6 +38,7 @@ public:
         towardLeft = 0,
         towardRight = 1,
     };
+    static const int INTERVAL, WALKINTERVAL;
 
 public slots:
     void vertical_move();
@@ -47,13 +53,19 @@ private:
     int type; //角色类型
     int towards = 1; //朝向:0为左，1为右
     int vertical_speed = 0; //垂直速度，以向下为正方向
-    int hp=12;//血量，不超过12
+    int max_hp = 12;
+    int hp = max_hp;//血量，不超过12
+    int speed = 2; //行走速度
+    int gravity = 1000; //重力
     QList<QLabel*> &ground_arr; //障碍物与地面数组
 
     QPixmap getPixmap(int type, int towards); //获取图片
     bool isOutOfBorder(int dir, int step); //判断是否出界
     bool isCollidedWithBlocks(int dir, int step, QRect &cross_rect); //判断是否碰撞，若碰撞，则cross_rect为碰撞矩形大小
     void moveEvent(QMoveEvent *event);
+
+signals:
+    void land(int id); //发出落地信号
 };
 
 #endif // PLAYER_H

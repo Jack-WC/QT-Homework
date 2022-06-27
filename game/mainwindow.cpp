@@ -25,9 +25,6 @@ const int C_W = 60;//人物宽与高
 const int C_H = 100;
 const int M_W = 50;//怪物宽度
 const int M_H = 50;//怪物高度
-const int GRAVITY = 1000;
-const int INTERVAL = 10;
-const int WALKINTERVAL = 50;//走路动画差分时间间隔，调到30以上会出bug，目前不清楚原因
 const int M_Hurt = 1;//怪物伤害
 const QPoint movePos[4] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
 
@@ -76,10 +73,8 @@ MainWindow::MainWindow(int sign, QWidget *parent) :
     }
 
     //血条展示
-    hp_label=new QLabel(this);
-    hp_label->setScaledContents(true);
-    hp_label->setGeometry(10,10,50*((player->getHp()+1)/2),50);
-    hp_label->setPixmap(QPixmap(":/new/prefix1/Image/hp" + QString::number(player->getHp()) + ".png"));
+    hpbar = new HpBar(player->getHp(), player->getMaxHp(), this);
+    hpbar->move(50, 50);
 
     //怪物移动计时器初始化
     timer_monster[0] = new QTimer(this);
@@ -220,7 +215,7 @@ void MainWindow::onTimer_attack()
             if(player->changeHp(M_Hurt)){
                 exit(0);//血为零直接结束/弹出失败界面
             }
-            showHp();//不然则杀死怪物
+            hpbar->decrease(M_Hurt);
             record[i] = 0;
             timer_monster[i]->stop();
             delete monster[i];
@@ -229,13 +224,6 @@ void MainWindow::onTimer_attack()
             timer_monster[i] = nullptr;
         }
     }
-}
-
-//更新血条
-void MainWindow::showHp()
-{
-    hp_label->setGeometry(10,10,50*((player->getHp()+1)/2),50);
-    hp_label->setPixmap(QPixmap(":/new/prefix1/Image/hp" + QString::number(player->getHp()) + ".png"));
 }
 
 MainWindow::~MainWindow()

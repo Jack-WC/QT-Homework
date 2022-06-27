@@ -1,6 +1,9 @@
 #include "player.h"
 #include <QtWidgets>
 
+const int Player::INTERVAL = 10; //走路移动时间间隔
+const int Player::WALKINTERVAL = 50;//走路动画差分时间间隔，调到30以上会出bug，目前不清楚原因
+
 Player::Player(int type_, int init_towards, QList<QLabel*> &ground_arr_, QWidget *parent)
     : QLabel(parent), type(type_), ground_arr(ground_arr_), towards(init_towards)
 {
@@ -31,13 +34,11 @@ bool Player::isOutOfBorder(int dir, int step)
 
 void Player::vertical_move() //上下移动
 {
-    int step = vertical_speed * ((double)INTERVAL / 1000);//INTERVAL为10，GRAVITY为1000
+    int step = vertical_speed * ((double)INTERVAL / 1000);
     int dir = step > 0 ? 1 : 0; //移动方向
-    vertical_speed += GRAVITY * ((double)INTERVAL / 1000); //加速
+    vertical_speed += gravity * ((double)INTERVAL / 1000); //加速
     if(!move(dir, abs(step))) //碰到障碍，速度变为0
-    {
         vertical_speed = 0;
-    }
 }
 
 void Player::jump(int init_speed) //人物跳跃
@@ -83,13 +84,16 @@ bool Player::isInSpace()
 {
     QPoint bottom_left = geometry().bottomLeft();
     QPoint bottom_right = geometry().bottomRight();
-    for(auto block : ground_arr)
+    for(int i = 0; i < ground_arr.size(); i++)
     {
+        auto block = ground_arr[i];
         QPoint top_left = block->geometry().topLeft();
         QPoint top_right = block->geometry().topRight();
         if(top_left.y() - bottom_left.y() <= 1 && top_left.y() - bottom_left.y() >= 0
            && bottom_right.x() >= top_left.x() && top_right.x() >= bottom_left.x()) //判断是否与地面相交
         {
+            if(vertical_speed > 0)
+                emit land(i);
             return false;
         }
     }
@@ -116,19 +120,12 @@ bool Player::move(int dir, int step)
 void Player::keyAction(bool up, bool left, bool right)
 {
     if(up)
-        jump(700);
-    if(left)
+        jump(800);
+    if(left || right)
     {
-        if(towards != towardLeft)
+        if(left && towards != towardLeft)
             setTowards(towardLeft);
-        if(!action_timer->isActive())
-            action_timer->start(INTERVAL);
-        if(!walk_timer->isActive())
-            walk_timer->start(WALKINTERVAL);
-    }
-    if(right)
-    {
-        if(towards != towardRight)
+        else if(right && towards != towardRight)
             setTowards(towardRight);
         if(!action_timer->isActive())
             action_timer->start(INTERVAL);
@@ -144,9 +141,19 @@ void Player::endMove(){
     setTowards(towards);
 }
 
+void Player::setSpeed(int speed)
+{
+    this->speed = speed;
+}
+
+void Player::setGravity(int gravity)
+{
+    this->gravity = gravity;
+}
+
 void Player::onTimer_player()
 {
-    move(towards == towardLeft ? moveLeft : moveRight, 2);
+    move(towards == towardLeft ? moveLeft : moveRight, speed);
 }
 
 //走路动画
@@ -171,6 +178,16 @@ int Player::getType()
     return type;
 }
 
+void Player::setMaxHp(int max_hp)
+{
+    this->max_hp = max_hp;
+}
+
+int Player::getMaxHp()
+{
+    return max_hp;
+}
+
 void Player::setTowards(int towards)
 {
     this->towards = towards;
@@ -190,7 +207,9 @@ int Player::getHp()
 bool Player::changeHp(int delta)
 {
     hp-=delta;
-    if(hp<=0) return true;
-    else return false;
+    if(hp<=0)
+        return true;
+    else
+        return false;
 }
 

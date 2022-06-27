@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     player.cpp \
     op.cpp \
     game.cpp \
-    mainframe.cpp
+    mainframe.cpp \
+    hpbar.cpp
 
 HEADERS  += mainwindow.h \
     pick.h \
@@ -30,7 +31,8 @@ HEADERS  += mainwindow.h \
     player.h \
     op.h \
     game.h \
-    mainframe.h
+    mainframe.h \
+    hpbar.h
 
 FORMS    += mainwindow.ui \
     pick.ui \

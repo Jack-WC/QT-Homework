@@ -6,8 +6,10 @@ MainFrame::MainFrame(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainFrame)
 {
-    cwidget = new MainWindow(1, this);
-    player = ((MainWindow*)cwidget)->getPlayer();
+//    cwidget = new MainWindow(1, this);
+//    player = ((MainWindow*)cwidget)->getPlayer();
+    cwidget = new Game(1, this);
+    player = ((Game*)cwidget)->getPlayer();
     setCentralWidget(cwidget);
     statusBar()->setVisible(false);
 }

@@ -48,5 +48,13 @@
         <file>Image/skip.png</file>
         <file>Image/op.mp4</file>
         <file>Image/character1.png</file>
+        <file>Image/ground_correct.png</file>
+        <file>Image/ground_flicker.png</file>
+        <file>Image/ground_wrong.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>Image/ground_correct.png</file>
+        <file>Image/ground_flicker.png</file>
+        <file>Image/ground_wrong.png</file>
     </qresource>
 </RCC>
