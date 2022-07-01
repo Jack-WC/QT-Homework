@@ -24,3 +24,12 @@
 1.将mainwindow的两个timer与全部player移动的有关函数都整合到player类里
 2.新增mainframe主界面，mainwindow变为原来关卡的窗口
 3.将键盘事件转移到MainFrame主界面
+
+6.27 update log:
+1.新增HpBar血条类
+2.完成一个特殊关卡
+
+6.29 update log:
+1.完成其余两个特殊关卡制作
+2.添加选择关卡界面
+
