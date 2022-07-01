@@ -16,6 +16,7 @@ public:
     void jump(int init_speed);
     bool move(int dir, int step); //dir:0123分别为上下左右,step为步长
     void setTowards(int towards);
+    int flag = 0;
     int getTowards();
     int getVerticalSpeed() const;
     int getType();
@@ -46,7 +47,6 @@ public slots:
     void onTimer_walk();
 
 private:
-    MainWindow *parent;
     QTimer *walk_timer; //行走计时器
     QTimer *jump_timer; //跳跃计时器
     QTimer *action_timer; //动画计时器

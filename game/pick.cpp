@@ -1,6 +1,8 @@
 #include "pick.h"
 #include "ui_pick.h"
 #include "mainwindow.h"
+#include "mainframe.h"
+#include "levelpick.h"
 #include <QPushButton>
 
 const int pick::WIDTH=1600;//界面宽度
@@ -13,7 +15,7 @@ pick::pick(QWidget *parent) : //pick继承自QMainWindow类
     ui(new Ui::pick)
 {
     ui->setupUi(this);
-    resize(WIDTH, HEIGHT);
+    setFixedSize(WIDTH, HEIGHT);
 
     //背景
     QLabel *background = new QLabel(this);
@@ -55,15 +57,14 @@ pick::~pick()
 
 void pick::onbutton1()
 {
-    Game *game = new Game(1);
-    //QMainWindow *level = new MainWindow(1);
-    game->show();
+    levelpick *lp = new levelpick(1);
+    lp->show();
     delete this;
 }
 
 void pick::onbutton2()
 {
-    //QMainWindow *level = new MainWindow(2);
-    //level->show();
+    levelpick *lp = new levelpick(2);
+    lp->show();
     delete this;
 }

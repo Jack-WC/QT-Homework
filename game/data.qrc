@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/new/prefix1">
         <file>data/map1.dat</file>
+        <file>data/music.dat</file>
     </qresource>
 </RCC>

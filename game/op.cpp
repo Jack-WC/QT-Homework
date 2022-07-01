@@ -14,6 +14,8 @@ OP::OP(QWidget *parent) :
     ui(new Ui::OP)
 {
     ui->setupUi(this);
+    setFixedSize(X,Y);
+
     //背景
     QLabel *background = new QLabel(this);
     background->resize(X,Y);

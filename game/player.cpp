@@ -9,6 +9,7 @@ Player::Player(int type_, int init_towards, QList<QLabel*> &ground_arr_, QWidget
 {
     setScaledContents(true);
     setPixmap(getPixmap(type, towards));
+
     //初始化计时器
     jump_timer = new QTimer(this);
     walk_timer = new QTimer(this);
@@ -66,7 +67,9 @@ bool Player::isCollidedWithBlocks(int dir, int step, QRect &cross_rect)
 void Player::moveEvent(QMoveEvent *event) //人物移动事件处理
 {
     if(pos().y() >= MainWindow::HEIGHT) //掉出画面，游戏失败
-        exit(0);
+    {
+        flag = 1;
+    }
     if(isInSpace()) //踩空
         jump(0);
     else//在地面上

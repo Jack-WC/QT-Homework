@@ -12,6 +12,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "player.h"
+#include "levelpick.h"
 #include <QtWidgets>
 #include <vector>
 #include <fstream>
@@ -28,11 +29,16 @@ const int M_H = 50;//怪物高度
 const int M_Hurt = 1;//怪物伤害
 const QPoint movePos[4] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
 
+QString words_text = "关卡名称：初临幻境\n你发现自己来到了一个奇妙的地方\n环视四周，你发现远处有一个传送门\n向着传送门进发吧\n要小心怪物哦";
+
 MainWindow::MainWindow(int sign, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWindow)
 {
     setFixedSize(WIDTH, HEIGHT);
+
+    chara1 = sign;
+    paret = parent;
 
     //背景
     background = new QLabel(this);
@@ -40,6 +46,12 @@ MainWindow::MainWindow(int sign, QWidget *parent) :
     background->setScaledContents(true);
     background->setAutoFillBackground(true);
     background->setPixmap(QPixmap(":/new/prefix1/Image/back.png"));
+
+    words = new QLabel(this);
+    words->setFont(QFont("宋体", 14));
+    words->setWordWrap(true);
+    words->setGeometry(1200,650,400,200);
+    words->setText(words_text);
 
     //加载地图文件
     std::ifstream mapfile("./data/map1.dat");
@@ -110,6 +122,44 @@ MainWindow::MainWindow(int sign, QWidget *parent) :
     door->setScaledContents(true);
     door->setPixmap(QPixmap(":/new/prefix1/Image/door.png"));
     door->setGeometry(0,250,100,100);
+    door_check = new QTimer(this);
+    connect(door_check,SIGNAL(timeout()),this,SLOT(onTimer_door()));
+    door_check->start(100);
+
+    out_check = new QTimer(this);
+    connect(out_check,SIGNAL(timeout()),this,SLOT(onTimer_out()));
+    out_check->start(50);
+}
+
+void MainWindow::delay(int ms)
+{
+    QEventLoop loop;
+    QTimer::singleShot(ms, &loop, SLOT(quit()));
+    loop.exec();
+}
+
+void MainWindow::onTimer_out()
+{
+    if(player->flag){
+        words->setFont(QFont("宋体", 40));
+        words->setText("游戏失败");
+        delay(1000);
+        levelpick *win1 = new levelpick(chara1);
+        win1->show();
+        delete paret;
+    }
+}
+
+void MainWindow::onTimer_door()
+{
+    if(player->geometry().y() + C_H == 350 && player->geometry().x() < 100 - C_W){
+        words->setFont(QFont("宋体", 40));
+        words->setText("成功过关");
+        delay(1000);
+        levelpick *win1 = new levelpick(chara1);
+        win1->show();
+        delete paret;
+    }
 }
 
 //怪物移动函数
@@ -213,7 +263,12 @@ void MainWindow::onTimer_attack()
         }
         else if(result[i] == 2 && record[i] == 1){
             if(player->changeHp(M_Hurt)){
-                exit(0);//血为零直接结束/弹出失败界面
+                words->setFont(QFont("宋体", 40));
+                words->setText("游戏失败");
+                delay(1000);
+                levelpick *win1 = new levelpick(chara1);
+                win1->show();
+                delete paret;
             }
             hpbar->decrease(M_Hurt);
             record[i] = 0;

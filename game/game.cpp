@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include "player.h"
 #include "synchapi.h"
+#include "levelpick.h"
 #include <algorithm>
 #include <ctime>
 
@@ -24,7 +25,7 @@ const int Game::TOTAL_ROUND = 5;
  * 存在问题：跳跃的判定按最左边的方块进行，有可能出现错误，所以尽量避免在方块边界处落地
 */
 
-QString describe_text[5] = {"有一天，你来到了一个神秘的地方", "这个地方看起来虽然平淡无奇，但是地面却暗藏玄机", "你注意到，地面有时会有方块发出亮光，这或许是神的指引？", "追随这一亮光，你或许就能找到前进的方向",
+QString describe_text[5] = {"你来到了一个神秘的地方", "这个地方看起来虽然平淡无奇，但是地面却暗藏玄机", "你注意到，地面有时会有方块发出亮光，这或许是神的指引？", "追随这一亮光，你或许就能找到前进的方向",
                            "关卡名称：记忆迷阵\n关卡说明：这一关有5轮考验，在每一轮考验当中，你需要按照神的指引，在亮光结束后，按顺序跳跃到之前发出亮光的方格上，如果跳到错误的方格上，你会面临神的惩罚（损失一点生命值）。每一轮考验都会比之前更加困难，祝你好运！"};
 
 Game::Game(int character_type, QWidget *parent) :
@@ -32,6 +33,8 @@ Game::Game(int character_type, QWidget *parent) :
     ui(new Ui::Game)
 {
     setFixedSize(WIDTH, HEIGHT);
+    chara2 = character_type;
+    paret = parent;
 
     //初始化背景
     QLabel *background = new QLabel(this);
@@ -82,11 +85,24 @@ Game::Game(int character_type, QWidget *parent) :
     flicker_timer = new QTimer(this);
     connect(flicker_timer, &QTimer::timeout, this, &Game::blockFlicker);
     connect(player, &Player::land, this, &Game::playerLand);
+
+    out_check = new QTimer(this);
+    connect(out_check,SIGNAL(timeout()),this,SLOT(onTimer_out()));
+    out_check->start(50);
 }
 
 Game::~Game()
 {
     delete ui;
+}
+
+void Game::onTimer_out()
+{
+    if(player->flag){
+        levelpick *win2 = new levelpick(chara2);
+        win2->show();
+        delete paret;
+    }
 }
 
 void Game::blockFlicker()
@@ -128,7 +144,13 @@ void Game::playerLand(int id)
         {
             round++;
             if(round == TOTAL_ROUND + 1)
+            {
                 hint->setText("你赢了！");
+                delay(1000);
+                levelpick *win2 = new levelpick(chara2);
+                win2->show();
+                delete paret;
+            }
             else
             {
                 hint->setText("恭喜您进入下一轮！");
@@ -146,7 +168,13 @@ void Game::playerLand(int id)
         ground_arr[id]->setPixmap(QPixmap(":/new/prefix1/Image/ground.png"));
         player->changeHp(1);
         if(player->getHp() == 0)
-            exit(0);
+        {
+            hint->setText("游戏失败orz");
+            delay(1000);
+            levelpick *win2 = new levelpick(chara2);
+            win2->show();
+            delete paret;
+        }
         hpbar->decrease(1);
         delay(1000);
         startGame(round);

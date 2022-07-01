@@ -51,6 +51,25 @@
         <file>Image/ground_correct.png</file>
         <file>Image/ground_flicker.png</file>
         <file>Image/ground_wrong.png</file>
+        <file>Image/keystroke.png</file>
+        <file>Image/space.png</file>
+        <file>Image/spot.png</file>
+        <file>Image/back1.png</file>
+        <file>Image/back2.png</file>
+        <file>Image/back3.png</file>
+        <file>Image/enemy2.png</file>
+        <file>Image/enemy3.png</file>
+        <file>Image/gift33.png</file>
+        <file>Image/gift22.png</file>
+        <file>Image/gift3.png</file>
+        <file>Image/ground1.png</file>
+        <file>Image/ground2.png</file>
+        <file>Image/ground3.png</file>
+        <file>Image/Rubia.mp3</file>
+        <file>Image/gift2.png</file>
+        <file>Image/gift11.png</file>
+        <file>Image/gift1.png</file>
+        <file>Image/enemy1.png</file>
     </qresource>
     <qresource prefix="/">
         <file>Image/ground_correct.png</file>
