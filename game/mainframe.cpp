@@ -1,13 +1,42 @@
 #include "mainframe.h"
 #include "ui_mainframe.h"
 #include "game.h"
+#include "mainwindow.h"
+#include "playwindow.h"
 
-MainFrame::MainFrame(QWidget *parent) :
+MainFrame::MainFrame(int level, int character, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainFrame)
 {
-    cwidget = new MainWindow(1, this);
-    player = ((MainWindow*)cwidget)->getPlayer();
+    setFixedSize(1600,900);
+
+    if(level == 1){
+        if(character == 1){
+            cwidget = new MainWindow(1, this);
+        }
+        else{
+            cwidget = new MainWindow(2, this);
+        }
+        player = ((MainWindow*)cwidget)->getPlayer();
+    }
+    else if(level == 2){
+        if(character == 1){
+            cwidget = new Game(1, this);
+        }
+        else{
+            cwidget = new Game(2, this);
+        }
+        player = ((Game*)cwidget)->getPlayer();
+    }
+    else if(level == 4){
+        if(character == 1){
+            cwidget = new PlayWindow(1, this);
+        }
+        else{
+            cwidget = new PlayWindow(2, this);
+        }
+        player = ((PlayWindow*)cwidget)->getPlayer();
+    }
     setCentralWidget(cwidget);
     statusBar()->setVisible(false);
 }
@@ -57,7 +86,8 @@ void MainFrame::keyReleaseEvent(QKeyEvent *event)
             player->endMove();
         }
         break;
-    default:
+    case Qt::Key_R:
+        player->flag = 1;
         break;
     }
 }

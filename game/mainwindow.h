@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "hpbar.h"
 #include <vector>
 #include <QMainWindow>
 #include <QLabel>
@@ -34,8 +35,7 @@ public:
 
     explicit MainWindow(int sign, QWidget *parent = 0);
     ~MainWindow();
-    Player *getPlayer();
-    void showHp();
+    Player *getPlayer();   
 
 public slots:
     void onTimer_monster1();
@@ -43,21 +43,29 @@ public slots:
     void onTimer_monster3();
     void onTimer_monster4();
     void onTimer_attack();
+    void onTimer_door();
+    void onTimer_out();
 
 private:
     Ui::MainWindow *ui;
+    QWidget *paret;
     Player *player;
     QPoint monster_pos[4] = {{400, 650}, {1200, 250}, {500, 150}, {100, 300}};//怪物位置
     QLabel *background;//背景
     QLabel *monster[4];//怪物
     QLabel *door;//传送门
-    QLabel* hp_label;
+    QLabel *words;//文字
+    HpBar *hpbar;
     QTimer *timer_monster[4];//怪物移动计时器
     QTimer *timer_attack;//战斗计时器
+    QTimer *door_check;
+    QTimer *out_check;
     QList<QLabel*> blocks;
+    int chara1;
     int turns;//记录跳跃过程
     int direction1, direction2, direction3, direction4;//记录怪物移动方向
     int record[4];//记录怪物死亡情况
+    void delay(int ms);
 };
 
 #endif // MAINWINDOW_H

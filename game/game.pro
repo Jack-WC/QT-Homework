@@ -16,29 +16,37 @@ TEMPLATE = app
 SOURCES += main.cpp\
     mainwindow.cpp \
     pick.cpp \
-    fail.cpp \
     startscreen.cpp \
     player.cpp \
     op.cpp \
     game.cpp \
-    mainframe.cpp
+    mainframe.cpp \
+    hpbar.cpp \
+    musiclevel.cpp \
+    levelpick.cpp \
+    playwindow.cpp
 
 HEADERS  += mainwindow.h \
     pick.h \
-    fail.h \
     startscreen.h \
     player.h \
     op.h \
     game.h \
-    mainframe.h
+    mainframe.h \
+    hpbar.h \
+    musiclevel.h \
+    levelpick.h \
+    playwindow.h
 
 FORMS    += mainwindow.ui \
     pick.ui \
-    fail.ui \
     startscreen.ui \
     op.ui \
     game.ui \
-    mainframe.ui
+    mainframe.ui \
+    musiclevel.ui \
+    levelpick.ui \
+    playwindow.ui
 
 RESOURCES += \
     image.qrc \

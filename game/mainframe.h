@@ -14,7 +14,7 @@ class MainFrame : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainFrame(QWidget *parent = 0);
+    explicit MainFrame(int level, int character, QWidget *parent = 0);
     ~MainFrame();
 
 private:

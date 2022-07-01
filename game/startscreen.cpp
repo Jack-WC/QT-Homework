@@ -8,6 +8,7 @@ StartScreen::StartScreen(QWidget *parent) :
     ui(new Ui::StartScreen)
 {
     ui->setupUi(this);
+    setFixedSize(1600,900);
 
     //背景
     QLabel *background = new QLabel(this);
@@ -18,19 +19,19 @@ StartScreen::StartScreen(QWidget *parent) :
 
     //标题
     QLabel *words = new QLabel(this);
-    words->setGeometry(200,100,1200,150);
+    words->setGeometry(470,100,1200,150);
     words->setFont(QFont("Microsoft YaHei", 50));
-    words->setText("攻城狮的奇妙冒险（未定，测试");
+    words->setText("攻城狮的奇妙冒险");
 
     //图片展示
     QLabel *character1 = new QLabel(this);
     character1->setScaledContents(true);
     character1->setPixmap(QPixmap(":/new/prefix1/Image/character1.png"));
-    character1->setGeometry(650,250,C_W,C_H);
+    character1->setGeometry(740,250,C_W,C_H);
 
     //选择按钮
     QPushButton *button1 = new QPushButton("开始游戏",this);
-    button1->setGeometry(720,750,160,100);
+    button1->setGeometry(690,600,160,100);
     connect(button1,SIGNAL(clicked()),this,SLOT(onbutton1()));
 
 }
